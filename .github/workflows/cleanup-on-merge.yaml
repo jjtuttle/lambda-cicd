@@ -1,0 +1,37 @@
+name: Cleanup PR Stack
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Get merged PR number
+        id: get_pr
+        run: |
+          PR_NUMBER=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.groot-preview+json" \
+            "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" \
+            | jq '.[0].number // empty')
+
+          echo "Found PR number: $PR_NUMBER"
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Delete Stack
+        if: steps.get_pr.outputs.pr_number != ''
+        run: |
+          stack_name="pr-test-stack-${{ steps.get_pr.outputs.pr_number }}"
+          echo "Deleting stack $stack_name"
+          aws cloudformation delete-stack --stack-name "$stack_name"
