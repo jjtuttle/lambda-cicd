@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'S3 Bucket for CICD Pipeline PR'
+Description: 'S3 Bucket for my CICD Pipeline PR'
 
 Parameters:
   Environment:
@@ -10,17 +10,16 @@ Parameters:
       - staging
       - production
 
-Resource:
+Resources:
   MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub '${AWS::StackName}-${Environment}-bucket'
-    Tags:
-      - Key: Environment
-        Value: !Ref Environment
-
+      BucketName: !Sub 'cicd-${Environment}-${AWS::Region}-${AWS::AccountId}'
+      Tags:
+        - Key: Project
+          Value: GithubActionTesting
 
 Outputs:
   BucketName:
-    Description: 'Name of created s3 Bucket'
-    value: !Ref MyS3Bucket
+    Description: 'Name of the created s3 Bucket'
+    Value: !Ref MyS3Bucket
