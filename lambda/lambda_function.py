@@ -6,3 +6,4 @@ def lambda_function(event, context):
         'statusCode': 200,
         'body': json.dumps('Hello updated Lambda from cursor!')
     }
+# test trigger
