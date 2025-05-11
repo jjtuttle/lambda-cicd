@@ -35,3 +35,34 @@ jobs:
           stack_name="pr-test-stack-${{ steps.get_pr.outputs.pr_number }}"
           echo "Deleting stack $stack_name"
           aws cloudformation delete-stack --stack-name "$stack_name"
+
+      - name: Wait for stack deletion
+        if: steps.get_pr.outputs.pr_number != ''
+        run: |
+          stack_name="pr-test-stack-${{ steps.get_pr.outputs.pr_number }}"
+          echo "Waiting for stack $stack_name to delete..."
+          aws cloudformation wait stack-delete-complete --stack-name "$stack_name"
+
+      - name: Comment back on PR
+        if: steps.get_pr.outputs.pr_number != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: Number("${{ steps.get_pr.outputs.pr_number }}"),
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "✅ CloudFormation stack for PR #${{ steps.get_pr.outputs.pr_number }} has been cleaned up."
+            })
+
+      - name: Send Slack Notification
+        if: steps.get_pr.outputs.pr_number != ''
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "🧹 The CloudFormation stack for PR #${{ steps.get_pr.outputs.pr_number }} has been successfully deleted."
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
