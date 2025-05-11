@@ -18,6 +18,8 @@ Resources:
       Tags:
         - Key: Project
           Value: GithubActionTesting
+        - Key: Environment
+          Value: !Ref Environment
 
 Outputs:
   BucketName:
