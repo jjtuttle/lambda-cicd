@@ -14,10 +14,12 @@ Resources:
   MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub 'cicd-${Environment}-${AWS::Region}-${AWS::AccountId}'
+      BucketName: !Sub 'my-cicd-${Environment}-${AWS::Region}-${AWS::AccountId}'
       Tags:
         - Key: Project
           Value: GithubActionTesting
+        - Key: Environment
+          Value: !Ref Environment
 
 Outputs:
   BucketName:
