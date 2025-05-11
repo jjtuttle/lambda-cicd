@@ -10,7 +10,7 @@ Parameters:
       - staging
       - production
 
-Resource:
+Resources:
   MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
@@ -18,9 +18,6 @@ Resource:
     Tags:
       - Key: Environment
         Value: !Ref Environment
-      - Key: Environment
-        Value: GithubActionsTesting
-
 
   Outputs:
     BucketName:
