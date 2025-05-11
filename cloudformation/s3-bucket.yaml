@@ -19,7 +19,7 @@ Resources:
         - Key: Project
           Value: GithubActionTesting
 
-  Outputs:
-    BucketName:
-      Description: 'Name of the created s3 Bucket'
-      value: !Ref MyS3Bucket
+Outputs:
+  BucketName:
+    Description: 'Name of the created s3 Bucket'
+    Value: !Ref MyS3Bucket
