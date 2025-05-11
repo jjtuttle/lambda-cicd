@@ -14,7 +14,7 @@ Resources:
   MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub 'tuttle-${AWS::StackName}-${Environment}-bucket'
+      BucketName: !Sub 'cicd-${Environment}-${AWS::Region}-${AWS::AccountId}'
       Tags:
         - Key: Environment
           Value: !Ref Environment
